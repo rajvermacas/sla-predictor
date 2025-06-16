@@ -38,16 +38,15 @@ Features extracted from each date include:
 - **Day of the Month**: Integer (1–31).
 - **Month**: Integer (1 = January, 12 = December).
 - **Week of the Year**: ISO week number (1–53).
+- **Day of the Year**: Integer (1–365/366) for seasonal trends.
 - **Is Weekend**: Binary (1 = Saturday/Sunday, 0 = weekday).
 - **Is Holiday**: Binary (1 = holiday, 0 = non-holiday).
+- **Days Since Last Holiday**: Integer counting days since the last holiday (captures backlog effects).
 - **Previous Day SLA Missed**: Binary (1 = previous day missed SLA, 0 = met).
-- **Day of the Year**: Integer (1–365/366) for seasonal trends.
 - **Consecutive Misses**: Integer counting consecutive SLA misses up to the previous day.
-- **Workload Volume**: Numerical feature (e.g., number of tasks or feed size) if data is available, normalized to a standard scale (e.g., 0–1).
-- **Staffing Level**: Numerical feature (e.g., staff hours or headcount) if provided, normalized to a standard scale.
-- **Day Since Last Holiday**: Integer counting days since the last holiday, capturing recovery or backlog effects.
+- **Rolling Miss Rate (7-day)**: Float (0–1) capturing recent trend.
 
-These features detect patterns like weekend/holiday impacts, seasonal trends, workload/staffing effects, and SLA miss streaks. **Note**: "Workload Volume" and "Staffing Level" require external data; "Previous Day SLA Missed" and "Consecutive Misses" need defaults (e.g., 0) for future predictions.
+These features capture calendar effects, seasonal trends, holiday proximity, and recent SLA streaks without relying on external workload or capacity data. **Note**: Lag-based variables (e.g., "Previous Day SLA Missed," "Consecutive Misses") default to 0 when forecasting future dates.
 
 ### 2.3. Model Training
 
@@ -57,7 +56,7 @@ Recommended models:
 - **Random Forest**: Boosts accuracy for larger datasets.
 
 Training considerations:
-- Use all features for larger datasets; exclude optional ones ("Workload Volume," "Staffing Level," "Day Since Last Holiday") for simplicity if data is limited.
+- Begin with calendar features; incorporate lag-based variables (Consecutive Misses, Rolling Miss Rate) when sufficient history is available.
 - Start with basic models, adding complexity/features as needed.
 
 ### 2.4. Prediction
